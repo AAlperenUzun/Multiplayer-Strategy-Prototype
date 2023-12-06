@@ -1,14 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 using UnityEngine.AI;
 
 public class GameManager : MonoBehaviourPun
 {
     public Camera cam;
-    private List<PlayerController> players = new List<PlayerController>();
-    private PlayerController selectedPlayer;
+    private List<PlayerController> _players = new List<PlayerController>();
+    private PlayerController _selectedPlayer;
 
+    private int blueTeamWood = 0;
+    private int redTeamWood = 0;
+
+    public TMP_Text blueTeamWoodText;
+    public TMP_Text redTeamWoodText;
+    
     private void Awake()
     {
         cam = FindObjectOfType<Camera>();
@@ -23,29 +30,65 @@ public class GameManager : MonoBehaviourPun
 
             if (Physics.Raycast(ray, out hit))
             {
-                // Kontrol edilen bir karaktere tıklandı mı kontrol et
                 var player = hit.collider.GetComponent<PlayerController>();
+                var wood = hit.collider.GetComponent<Wood>();
                 if (player != null && player.photonView.IsMine)
                 {
-                    if (selectedPlayer != null)
+                    if (_selectedPlayer != null)
                     {
-                        selectedPlayer.Deselect();
+                        _selectedPlayer.Deselect();
                     }
 
-                    selectedPlayer = player;
-                    selectedPlayer.Select();
+                    _selectedPlayer = player;
+                    _selectedPlayer.Select();
                 }
-                else if (selectedPlayer != null)
+                else if (_selectedPlayer != null)
                 {
-                    // Seçilen karaktere hareket emri gönder
-                    selectedPlayer.MoveTo(hit.point);
+                    if (wood != null)
+                    {
+                        _selectedPlayer.CollectWood(wood);
+                    }
+                    _selectedPlayer.MoveTo(hit.point);
                 }
             }
         }
     }
+    
+    
+    public void UpdateWoodScore(bool isBlue, int woodAmount)
+    {
+        if (isBlue)
+        {
+            blueTeamWood = woodAmount;
+            blueTeamWoodText.text = "" + blueTeamWood;
+        }
+        else
+        {
+            redTeamWood = woodAmount;
+            redTeamWoodText.text = "" + redTeamWood;
+        }
+    }
 
+    public int AddWoodToTeam(int value)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            blueTeamWood+=value;
+            blueTeamWoodText.text =""+ blueTeamWood;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "BlueTeamWood", blueTeamWood } });
+            return blueTeamWood;
+        }
+        else
+        {
+            redTeamWood+=value;
+            redTeamWoodText.text = "" + redTeamWood;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "RedTeamWood", redTeamWood } });
+            return redTeamWood;
+        }
+    }
+    
     public void RegisterPlayer(PlayerController player)
     {
-        players.Add(player);
+        _players.Add(player);
     }
 }

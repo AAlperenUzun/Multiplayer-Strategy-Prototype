@@ -47,4 +47,5 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             }
         }
     }
+
 }
