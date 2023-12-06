@@ -1,0 +1,17 @@
+Oyuncular, karakterleri seçerek kaynak toplamak, boş alanlara hareket ettirmek ve diğer oyuncularla etkileşimde 
+bulunmak için kullanabiliyorlar.
+
+A* algoritması kullanarak yapay zeka yol bulma mekaniklerini ve Photon Network ile çok oyunculu özellikleri
+ entegre ettim. Karakterler, oyunda bulunan statik engellerin etrafında bu yol bulma mekaniklerini kullanarak hareket 
+ ediyor.
+
+İki oyuncu aynı oyun odasına katılabiliyor. Oyuncular, kendi karakterlerini kontrol edebiliyor ve gerçek zamanlı olarak
+ birbirlerinin hareketlerini ve eylemlerini görebiliyorlar.
+
+Oyuncular, karakterleri seçerek ve tahta kaynağına dokunarak kaynak toplama işlevselliğini de ekledim. Karakterler 
+kaynağa ulaştığında, tahta toplanıyor.
+
+Projeye 2 gün vakit ayırdım.
+
+Teşekkürler,
+Ali Alperen Uzun
